@@ -1,3 +1,4 @@
+alembic==1.8.1
 anyio==3.6.1
 bcrypt==4.0.0
 cffi==1.15.1
@@ -13,6 +14,8 @@ h11==0.13.0
 httptools==0.5.0
 idna==3.4
 makefun==1.15.0
+Mako==1.2.2
+MarkupSafe==2.1.1
 passlib==1.7.4
 pycparser==2.21
 pydantic==1.10.2
