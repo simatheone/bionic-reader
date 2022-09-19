@@ -130,3 +130,11 @@ dmypy.json
 
 # vscode dir
 .vscode/
+
+
+# To DO list
+
+*.txt
+
+# SQlite DB
+*.db
