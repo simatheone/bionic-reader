@@ -1,14 +1,16 @@
+from typing import Optional
+
 from pydantic import BaseSettings, EmailStr
 
 
 class Settings(BaseSettings):
     app_title: str = 'Bionic Reader'
     app_description: str = 'Bionic Reader'
-    database_url: str | None
+    database_url: Optional[str]
     secret: str = 'SECRET'
-    first_superuser_email: EmailStr | None
-    first_superuser_password: str | None
-    first_name_superuser: str | None
+    first_superuser_email: Optional[EmailStr]
+    first_superuser_password: Optional[str]
+    first_name_superuser: Optional[str]
 
     class Config:
         env_file = '.env'

@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import Field
 from fastapi_users import schemas
 
@@ -11,4 +13,4 @@ class UserCreate(schemas.BaseUserCreate):
 
 
 class UserUpdate(schemas.BaseUserUpdate):
-    first_name: str | None
+    first_name: Optional[str]
