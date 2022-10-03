@@ -39,7 +39,8 @@ cookie_transport = CookieTransport(
     cookie_max_age=3600,
     cookie_name='bionic-reader-cookie-auth',
     cookie_secure=True,
-    cookie_httponly=True
+    cookie_httponly=True,
+    cookie_samesite='none'
 )
 
 
