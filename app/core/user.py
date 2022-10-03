@@ -40,7 +40,7 @@ cookie_transport = CookieTransport(
     cookie_name='bionic-reader-cookie-auth',
     cookie_secure=False,
     cookie_httponly=False,
-    cookie_samesite='none',
+    #cookie_samesite='lax',
     #cookie_domain='bionic-reader-nu.vercel.app'
 )
 
