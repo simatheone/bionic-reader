@@ -38,10 +38,10 @@ async def get_user_db(session: AsyncSession = Depends(get_async_session)):
 cookie_transport = CookieTransport(
     cookie_max_age=3600,
     cookie_name='bionic-reader-cookie-auth',
-    cookie_secure=True,
-    cookie_httponly=True,
+    cookie_secure=False,
+    cookie_httponly=False,
     cookie_samesite='none',
-    cookie_domain='bionic-reader-nu.vercel.app'
+    #cookie_domain='bionic-reader-nu.vercel.app'
 )
 
 
