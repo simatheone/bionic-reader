@@ -13,6 +13,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
+        'https://bionic-reader-production.up.railway.app',
         'https://bionic-reader-1g8rrnpz2-bnzone.vercel.app',
         'https://bionic-reader-nu.vercel.app',
         'http://localhost',
