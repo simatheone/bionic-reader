@@ -29,7 +29,7 @@ router.include_router(
 
 @router.patch(
     '/users/{id}',
-    tags=['users'],
+    tags=['Users'],
     deprecated=True
 )
 def patch_user(id: str):
@@ -41,7 +41,7 @@ def patch_user(id: str):
 
 @router.delete(
     '/users/{id}',
-    tags=['users'],
+    tags=['Users'],
     deprecated=True
 )
 def delete_user(id: str):
