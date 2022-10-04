@@ -36,17 +36,20 @@ async def get_user_db(session: AsyncSession = Depends(get_async_session)):
 
 
 cookie_transport = CookieTransport(
-    cookie_max_age=3600,
-    cookie_name='bionic-reader-cookie-auth',
-    cookie_secure=False,
-    cookie_httponly=False,
-    #cookie_samesite='lax',
-    #cookie_domain='bionic-reader-nu.vercel.app'
+    cookie_max_age=settings.cookie_max_age,
+    cookie_name=settings.cookie_name,
+    cookie_secure=settings.cookie_secure,
+    cookie_httponly=settings.cookie_httponly,
+    cookie_samesite=settings.cookie_samesite,
+    cookie_domain=settings.cookie_domain
 )
 
 
 def get_jwt_strategy() -> JWTStrategy:
-    return JWTStrategy(secret=settings.secret, lifetime_seconds=3600)
+    return JWTStrategy(
+        secret=settings.secret,
+        lifetime_seconds=settings.lifetime_seconds
+    )
 
 
 auth_backend = AuthenticationBackend(
