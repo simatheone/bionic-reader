@@ -10,24 +10,6 @@ app = FastAPI(
     description=settings.app_description
 )
 
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=[
-#         # remove railway from origins.
-#         # Check requests from front to back after it is edited.
-#         'https://bionic-reader-production.up.railway.app',
-#         'https://bionic-reader-1g8rrnpz2-bnzone.vercel.app',
-#         'https://bionic-reader-nu.vercel.app',
-#         'http://localhost',
-#         'http://localhost:8080',
-#         'http://localhost:3000',
-#         'http://127.0.0.1:8000'
-#     ],
-#     allow_credentials=True,
-#     allow_methods=['*'],
-#     allow_headers=['*']
-# )
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
