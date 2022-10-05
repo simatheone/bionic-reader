@@ -2,8 +2,6 @@ from typing import Optional
 
 from pydantic import BaseSettings, EmailStr
 
-ENV_FILE = '.env'
-
 
 class Settings(BaseSettings):
     # Application settings
@@ -23,11 +21,10 @@ class Settings(BaseSettings):
     first_name_superuser: Optional[str]
 
     # Cors settings
-    # fix this settings. Pydantic couldn't parse them.
-    # allow_origins: Optional[Sequence[str]]
+    allow_origins: str
     allow_credentials: bool = False
-    # allow_methods: Optional[List[str]]
-    # allow_headers: list
+    allow_methods: str
+    allow_headers: str
 
     # Cookie settings
     cookie_max_age: Optional[int]
@@ -41,7 +38,7 @@ class Settings(BaseSettings):
     lifetime_seconds: Optional[int]
 
     class Config:
-        env_file = f'{ENV_FILE}'
+        env_file = '.env'
 
 
 settings = Settings()    # pyright: ignore
