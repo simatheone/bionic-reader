@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import BaseSettings, EmailStr
 
-ENV_FILE = '.env.dev'
+ENV_FILE = '.env'
 
 
 class Settings(BaseSettings):
