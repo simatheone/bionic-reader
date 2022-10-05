@@ -31,8 +31,6 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        # remove railway from origins.
-        # Check requests from front to back after it is edited.
         'https://bionic-reader-nu.vercel.app',
         'https://bionic-reader-1g8rrnpz2-bnzone.vercel.app',
     ],
