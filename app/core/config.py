@@ -1,8 +1,8 @@
-from typing import Optional, List, Sequence
+from typing import Optional
 
 from pydantic import BaseSettings, EmailStr
 
-ENV_FILE = '.env'
+ENV_FILE = '.env.dev'
 
 
 class Settings(BaseSettings):
@@ -23,10 +23,11 @@ class Settings(BaseSettings):
     first_name_superuser: Optional[str]
 
     # Cors settings
+    # fix this settings. Pydantic couldn't parse them.
     # allow_origins: Optional[Sequence[str]]
-    # allow_credentials: Optional[bool]
+    allow_credentials: bool = False
     # allow_methods: Optional[List[str]]
-    # allow_headers: Optional[List[str]]
+    # allow_headers: list
 
     # Cookie settings
     cookie_max_age: Optional[int]
@@ -43,4 +44,4 @@ class Settings(BaseSettings):
         env_file = f'{ENV_FILE}'
 
 
-settings = Settings()   # pyright: ignore
+settings = Settings()    # pyright: ignore

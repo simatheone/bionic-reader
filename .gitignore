@@ -137,6 +137,7 @@ dmypy.json
 # To DO list
 
 *.txt
+todo.md
 
 # SQlite DB
 *.db
