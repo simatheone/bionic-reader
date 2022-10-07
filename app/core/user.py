@@ -41,7 +41,6 @@ cookie_transport = CookieTransport(
     cookie_secure=settings.cookie_secure,
     cookie_httponly=settings.cookie_httponly,
     cookie_samesite=settings.cookie_samesite,
-    cookie_domain=settings.cookie_domain
 )
 
 
