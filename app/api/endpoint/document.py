@@ -9,7 +9,8 @@ from app.core.db import get_async_session
 from app.core.user import current_user
 from app.crud.document import document_crud
 from app.models import User
-from app.schemas.document import DocumentDB, DocumentUpdate
+from app.schemas.document import DocumentCreate, DocumentDB, DocumentUpdate
+from app.services.text_transformation import execute_transformation_process
 
 router = APIRouter()
 
@@ -62,14 +63,43 @@ async def get_a_single_document(
     return document
 
 
-@router.post('/')
-async def create_document():
-    ...
+@router.post(
+    '/',
+    response_model=DocumentDB,
+    response_model_exclude={
+        'title', 'text', 'create_date', 'user_id'
+    },
+    dependencies=[Depends(current_user)]
+)
+async def create_new_document(
+    document: DocumentCreate,
+    user: User = Depends(current_user),
+    session: AsyncSession = Depends(get_async_session)
+):
+    """Returns a user's document.
+    Endpoint is available for authenticated users.
+
+    Fields to return:
+    - **id**: Document id.
+    """
+    new_document = await document_crud.create(
+        object_in=document, user=user, session=session
+    )
+    return new_document
+
+
+@router.post('/transform')
+async def transform_text(
+    text_to_transform: str,
+    session: AsyncSession = Depends(get_async_session)
+):
+    return await execute_transformation_process(text_to_transform, session)
 
 
 @router.patch(
     '/{document_id}',
     response_model=DocumentDB,
+    response_model_exclude={'user_id', 'create_date'},
     dependencies=[Depends(current_user)]
 )
 async def partially_update_document(
@@ -94,7 +124,7 @@ async def partially_update_document(
         session=session
     )
     document = await document_crud.update(
-        db_object=DocumentUpdate,
+        db_object=document,
         object_in=object_in,
         session=session
     )
