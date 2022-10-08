@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.validators import (check_document_before_edit,
-                                check_document_exists,
+                                check_document_exists_and_user_is_owner,
                                 check_document_title_duplicate)
 from app.core.db import get_async_session
 from app.core.user import current_user
@@ -41,14 +41,24 @@ async def get_all_user_documents_with_truncated_text(
 @router.get(
     '/{document_id}',
     response_model=DocumentDB,
+    response_model_exclude={'create_date', 'user_id'},
     dependencies=[Depends(current_user)]
 )
 async def get_a_single_document(
     document_id: int,
+    user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session)
 ):
-    document = await check_document_exists(
-        document_id, session
+    """Returns a user's document.
+    Endpoint is available for the owner of the document.
+
+    Fields to return:
+    - **id**: Document id;
+    - **title**: Document title;
+    - **text**: Document text.
+    """
+    document = await check_document_exists_and_user_is_owner(
+        document_id, user, session
     )
     return document
 
@@ -69,6 +79,16 @@ async def partially_update_document(
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session)
 ):
+    """Returns a patched document.
+    Endpoint is available for the owner of the document.
+
+    Fields to return:
+    - **title**: Document title;
+    - **text**: Document text;
+    - **id**: Document id;
+    - **create_date**: Document create date;
+    - **user_id**: User id related to the document.
+    """
     document = await check_document_before_edit(
         document_id=document_id,
         user=user,
@@ -98,7 +118,7 @@ async def delete_document(
     session: AsyncSession = Depends(get_async_session)
 ):
     """Returns a deleted document.
-    Endpoint is available for authenticated users.
+    Endpoint is available for the owner of the document.
 
     Fields to return:
     - **title**: Document title;
