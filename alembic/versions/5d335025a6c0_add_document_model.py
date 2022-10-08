@@ -1,8 +1,8 @@
 """Add Document model
 
-Revision ID: 1215fdcf77d4
+Revision ID: 5d335025a6c0
 Revises: 68c7cb6f1c54
-Create Date: 2022-10-08 20:40:01.509334
+Create Date: 2022-10-08 22:22:33.382189
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '1215fdcf77d4'
+revision = '5d335025a6c0'
 down_revision = '68c7cb6f1c54'
 branch_labels = None
 depends_on = None

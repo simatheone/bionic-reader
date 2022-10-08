@@ -7,7 +7,9 @@ from app.core.db import Base
 
 class Document(Base):
     """The Document model."""
-    title = Column(String(256), nullable=False)
+    title = Column(
+        String(256), default='Untitled Document', nullable=False
+    )
     text = Column(Text, nullable=False)
     create_date = Column(DateTime, default=datetime.now, nullable=False)
     user_id = Column(Integer, ForeignKey(
