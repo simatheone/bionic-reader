@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.document import document_crud
 from app.models import Document
+from app.models.user import User
 
 
 async def check_document_exists(
@@ -17,7 +18,7 @@ async def check_document_exists(
     if not document:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail=f'Document with id "{document_id}" is not found'
+            detail=f'The Document with id "{document_id}" is not found'
         )
     return document
 
@@ -39,3 +40,24 @@ async def check_document_title_duplicate(
                 'for the document.',
             )
         )
+
+
+async def check_document_before_edit(
+    document_id: int,
+    user: User,
+    session: AsyncSession
+):
+    document = await document_crud.get(document_id, session)
+
+    if not document:
+        raise HTTPException(
+            status_code=HTTPStatus.BAD_REQUEST,
+            detail=f'The Document with id "{document_id}" is not found'
+        )
+
+    if document.user_id != user.id and not user.is_superuser:
+        raise HTTPException(
+            status_code=HTTPStatus.METHOD_NOT_ALLOWED,
+            detail='You can not modify others\' documents!'
+        )
+    return document
