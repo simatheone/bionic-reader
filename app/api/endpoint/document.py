@@ -1,19 +1,23 @@
+from typing import List
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.validators import check_document_exists
+from app.api.validators import (check_document_before_edit,
+                                check_document_exists,
+                                check_document_title_duplicate)
 from app.core.db import get_async_session
 from app.core.user import current_user
 from app.crud.document import document_crud
 from app.models import User
-from app.schemas.document import DocumentDB
+from app.schemas.document import DocumentDB, DocumentUpdate
 
 router = APIRouter()
 
 
 @router.get(
     '/my_documents',
-    response_model=list[DocumentDB],
+    response_model=List[DocumentDB],
     response_model_exclude={'create_date', 'user_id'},
     dependencies=[Depends(current_user)]
 )
@@ -55,10 +59,32 @@ async def create_document():
 
 
 @router.patch(
-    '/{document_id}'
+    '/{document_id}',
+    response_model=DocumentDB,
+    dependencies=[Depends(current_user)]
 )
-async def partially_update_document():
-    ...
+async def partially_update_document(
+    document_id: int,
+    object_in: DocumentUpdate,
+    user: User = Depends(current_user),
+    session: AsyncSession = Depends(get_async_session)
+):
+    document = await check_document_before_edit(
+        document_id=document_id,
+        user=user,
+        session=session
+    )
+    if object_in.title is not None:
+        await check_document_title_duplicate(
+            object_in.title, session
+        )
+
+    document = await document_crud.update(
+        db_object=DocumentUpdate,
+        object_in=object_in,
+        session=session
+    )
+    return document
 
 
 @router.delete(
@@ -68,6 +94,7 @@ async def partially_update_document():
 )
 async def delete_document(
     document_id: int,
+    user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session)
 ):
     """Returns a deleted document.
@@ -80,6 +107,6 @@ async def delete_document(
     - **create_date**: Document create date;
     - **user_id**: User id related to the document.
     """
-    document = await check_document_exists(document_id, session)
+    document = await check_document_before_edit(document_id, user, session)
     document = await document_crud.remove(document, session)
     return document
