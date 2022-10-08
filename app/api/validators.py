@@ -30,25 +30,6 @@ async def check_document_exists_and_user_is_owner(
     return document
 
 
-async def check_document_title_duplicate(
-    document_title: str,
-    session: AsyncSession
-) -> None:
-    document_id = await document_crud.get_document_by_title(
-        document_title, session
-    )
-
-    if document_id:
-        raise HTTPException(
-            status_code=HTTPStatus.BAD_REQUEST,
-            detail=(
-                f'The Document with title "{document_title}" ',
-                'is already exist. Enter another unique title ',
-                'for the document.',
-            )
-        )
-
-
 async def check_document_before_edit(
     document_id: int,
     user: User,

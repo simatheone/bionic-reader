@@ -34,17 +34,5 @@ class CRUDDocument(
         db_obj = db_obj.scalars().all()
         return db_obj
 
-    async def get_document_by_title(
-        self,
-        document_title: str,
-        session: AsyncSession
-    ):
-        document_id = await session.execute(
-            select(
-                Document.id
-            ).where(Document.title == document_title)
-        )
-        return document_id.scalars().first()
-
 
 document_crud = CRUDDocument(Document)

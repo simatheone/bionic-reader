@@ -4,8 +4,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.validators import (check_document_before_edit,
-                                check_document_exists_and_user_is_owner,
-                                check_document_title_duplicate)
+                                check_document_exists_and_user_is_owner)
 from app.core.db import get_async_session
 from app.core.user import current_user
 from app.crud.document import document_crud
@@ -94,11 +93,6 @@ async def partially_update_document(
         user=user,
         session=session
     )
-    if object_in.title is not None:
-        await check_document_title_duplicate(
-            object_in.title, session
-        )
-
     document = await document_crud.update(
         db_object=DocumentUpdate,
         object_in=object_in,
