@@ -1,3 +1,5 @@
+from typing import List
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -19,7 +21,7 @@ class CRUDDocument(
         self,
         user: User,
         session: AsyncSession
-    ) -> list[Document]:
+    ) -> List[Document]:
         db_obj = await session.execute(
             select(
                 Document.id,
