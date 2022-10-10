@@ -22,17 +22,20 @@ class CRUDDocument(
         user: User,
         session: AsyncSession
     ) -> List[Document]:
-        db_obj = await session.execute(
+        db_object = await session.execute(
             select(
-                Document.id,
-                Document.title,
-                Document.text
+                Document
             ).where(
-                Document.user_id == user.id
+                Document.user_id == user.id,
             ).order_by(Document.create_date)
         )
-        db_obj = db_obj.scalars().all()
-        return db_obj
+        db_object = db_object.scalars().all()
+
+        for _ in db_object:
+            if len(_.text) > 30:
+                _.text = _.text[:30] + '...'
+
+        return db_object
 
 
 document_crud = CRUDDocument(Document)
