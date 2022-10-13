@@ -93,7 +93,10 @@ async def transform_text(
     text_to_transform: str
 ):
     """Returns transfromed text as a string with html tags inside."""
-    return await execute_transformation_process(text_to_transform)
+    transformed_text = await execute_transformation_process(
+        text_to_transform
+    )
+    return {'text': transformed_text}
 
 
 @router.patch(

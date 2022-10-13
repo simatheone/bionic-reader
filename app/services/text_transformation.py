@@ -3,12 +3,12 @@ from math import ceil
 from typing import List
 
 
-async def split_text_by_newlines(text: str) -> List[str]:
+def split_text_by_newlines(text: str) -> List[str]:
     splitted_text = text.split('\n')
     return splitted_text
 
 
-async def insert_html_b_tag_in_word(word: str) -> str:
+def insert_html_b_tag_in_word(word: str) -> str:
     if len(word) == 1:
         word_to_return = '<b>' + word + '</b>'
     if len(word) == 3:
@@ -19,7 +19,7 @@ async def insert_html_b_tag_in_word(word: str) -> str:
     return word_to_return
 
 
-async def transform_text(paragraph: str) -> str:
+def transform_text(paragraph: str) -> str:
     words_and_symbols = paragraph.split()
     transfromed_paragraph = []
 
@@ -40,12 +40,14 @@ async def transform_text(paragraph: str) -> str:
 
 
 async def execute_transformation_process(
-    text_to_transform: str,
+    text_to_transform: str
 ) -> str:
-    paragraphs = await split_text_by_newlines(text_to_transform)
-    result = []
+    paragraphs = split_text_by_newlines(text_to_transform)
+
+    fully_transformed_text = []
     for paragraph in paragraphs:
         transformed_text = transform_text(paragraph)
-        result.append(transformed_text)
-    res = '<br>'.join(result)
-    return res
+        fully_transformed_text.append(transformed_text)
+
+    fully_transformed_text = '<br>'.join(fully_transformed_text)
+    return fully_transformed_text
