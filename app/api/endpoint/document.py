@@ -90,10 +90,10 @@ async def create_new_document(
 
 @router.post('/transform')
 async def transform_text(
-    text_to_transform: str,
-    session: AsyncSession = Depends(get_async_session)
+    text_to_transform: str
 ):
-    return await execute_transformation_process(text_to_transform, session)
+    """Returns transfromed text as a string with html tags inside."""
+    return await execute_transformation_process(text_to_transform)
 
 
 @router.patch(
