@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Body
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.validators import (check_document_before_edit,
@@ -90,7 +90,7 @@ async def create_new_document(
 
 @router.post('/transform')
 async def transform_text(
-    text_to_transform: str
+    text_to_transform: str = Body(example={'text': 'Text to transform'})
 ):
     """Returns transfromed text as a string with html tags inside."""
     transformed_text = await execute_transformation_process(
