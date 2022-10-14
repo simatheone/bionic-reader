@@ -1,8 +1,8 @@
 """Add Document model
 
-Revision ID: 84fd0210624f
+Revision ID: 5d335025a6c0
 Revises: 68c7cb6f1c54
-Create Date: 2022-10-08 16:11:31.082561
+Create Date: 2022-10-08 22:22:33.382189
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '84fd0210624f'
+revision = '5d335025a6c0'
 down_revision = '68c7cb6f1c54'
 branch_labels = None
 depends_on = None
@@ -25,8 +25,7 @@ def upgrade() -> None:
     sa.Column('create_date', sa.DateTime(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], name='fk_document_user_id_user'),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('title')
+    sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
 
