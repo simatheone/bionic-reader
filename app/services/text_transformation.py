@@ -8,14 +8,15 @@ def split_text_by_newlines(text: str) -> List[str]:
     return splitted_text
 
 
+# <b> tags here for html
 def insert_html_b_tag_in_word(word: str) -> str:
     if len(word) == 1:
-        word_to_return = '<b>' + word + '</b>'
+        word_to_return = '**' + word + '**'
     if len(word) == 3:
-        word_to_return = '<b>' + word[0] + '</b>' + word[1:]
+        word_to_return = '**' + word[0] + '**' + word[1:]
     else:
         nums = ceil(len(word) / 2)
-        word_to_return = '<b>' + word[:nums] + '</b>' + word[nums:]
+        word_to_return = '**' + word[:nums] + '**' + word[nums:]
     return word_to_return
 
 
@@ -49,5 +50,6 @@ async def execute_transformation_process(
         transformed_text = transform_text(paragraph)
         fully_transformed_text.append(transformed_text)
 
-    fully_transformed_text = '<br>'.join(fully_transformed_text)
+    # <br> tag here for html
+    fully_transformed_text = '\n'.join(fully_transformed_text)
     return fully_transformed_text
