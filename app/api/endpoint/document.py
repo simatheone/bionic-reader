@@ -1,6 +1,7 @@
 from typing import List
 
 from fastapi import APIRouter, Depends, Body
+from fastapi.responses import FileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.validators import (check_document_before_edit,
@@ -11,6 +12,7 @@ from app.crud.document import document_crud
 from app.models import User
 from app.schemas.document import DocumentCreate, DocumentDB, DocumentUpdate
 from app.services.text_transformation import execute_transformation_process
+from app.services.pdf_generator import execute_pdf_generation_process
 
 router = APIRouter()
 
@@ -63,6 +65,26 @@ async def get_a_single_document(
     return document
 
 
+# @router.get(
+#     '/download/{document_id}',
+#     responses={200: {'content': {'application/pdf': {}}}},
+#     dependencies=[Depends(current_user)]
+# )
+# async def download_document(
+#     document_id: int,
+#     user: User = Depends(current_user),
+#     session: AsyncSession = Depends(get_async_session)
+# ):
+#     document = await check_document_exists_and_user_is_owner(
+#         document_id, user, session
+#     )
+#     text_to_transform = document.text
+#     pdf_file_resp = await execute_pdf_generation_process(
+#         text_to_transform, document.title)  # pyright: ignore
+#     return FileResponse(
+#         pdf_file_resp, media_type='application/pdf')   # pyright: ignore
+
+
 @router.post(
     '/',
     response_model=DocumentDB,
@@ -90,13 +112,13 @@ async def create_new_document(
 
 @router.post('/transform')
 async def transform_text(
-    text_to_transform: str = Body(example={'text': 'Text to transform'})
+    text: str
 ):
     """Returns transfromed text as a string with html tags inside."""
-    transformed_text = await execute_transformation_process(
-        text_to_transform
-    )
-    return {'text': transformed_text}
+    # transformed_text = await execute_transformation_process(
+    #     text
+    # )
+    return {'text': f'<div><b>{text}</b></div>'}
 
 
 @router.patch(
