@@ -22,7 +22,7 @@ async def check_document_exists_and_user_is_owner(
             detail=f'The Document with id "{document_id}" is not found'
         )
 
-    if document.user_id != User.id and not user.is_superuser:
+    if document.user_id != User.id or not user.is_superuser:
         raise HTTPException(
             status_code=HTTPStatus.FORBIDDEN,
             detail='Only the owner of the document is allowed to get it'
