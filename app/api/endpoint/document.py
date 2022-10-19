@@ -1,7 +1,8 @@
+from http import HTTPStatus
 from typing import List
 
 from fastapi import APIRouter, Depends, Body
-from fastapi.responses import FileResponse
+# from fastapi.responses import FileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.validators import (check_document_before_edit,
@@ -11,8 +12,8 @@ from app.core.user import current_user
 from app.crud.document import document_crud
 from app.models import User
 from app.schemas.document import DocumentCreate, DocumentDB, DocumentUpdate
-from app.services.text_transformation import execute_transformation_process
-from app.services.pdf_generator import execute_pdf_generation_process
+# from app.services.text_transformation import execute_transformation_process
+# from app.services.pdf_generator import execute_pdf_generation_process
 
 router = APIRouter()
 
@@ -91,6 +92,7 @@ async def get_a_single_document(
     response_model_exclude={
         'title', 'text', 'create_date', 'user_id'
     },
+    status_code=HTTPStatus.CREATED,
     dependencies=[Depends(current_user)]
 )
 async def create_new_document(
@@ -104,6 +106,7 @@ async def create_new_document(
     Fields to return:
     - **id**: Document id.
     """
+    # FIX: RESPONSE CODE 201
     new_document = await document_crud.create(
         object_in=document, user=user, session=session
     )
