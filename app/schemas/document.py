@@ -44,18 +44,12 @@ class DocumentUpdate(DocumentBaseSchema):
     # make 1 reuseable validator
     @validator('title')
     def validate_title_on_update(cls, title_value: Optional[str]):
-        print('*************************')
-        print(title_value)
-        print('*************************')
         if title_value is None:
             raise ValueError('The "title" of the document can not be empty')
         return title_value
 
     @validator('text')
     def validate_text_on_update(cls, text_value: Optional[str]):
-        print('*************************')
-        print(text_value)
-        print('*************************')
         if text_value is None:
             raise ValueError('The "text" of the document can not be empty')
         return text_value
