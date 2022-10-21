@@ -1,6 +1,6 @@
 from typing import List
 
-from sqlalchemy import select
+from sqlalchemy import select, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.base import CRUDBase
@@ -27,7 +27,7 @@ class CRUDDocument(
                 Document
             ).where(
                 Document.user_id == user.id,
-            ).order_by(Document.create_date)
+            ).order_by(desc(Document.create_date))
         )
         db_object = db_object.scalars().all()
 
