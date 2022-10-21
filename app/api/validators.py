@@ -27,24 +27,3 @@ async def check_document_exists_and_user_is_owner(
             detail='Only the owner of the document is allowed to view it'
         )
     return document
-
-
-async def check_document_before_edit(
-    document_id: int,
-    user: User,
-    session: AsyncSession
-):
-    document = await document_crud.get(document_id, session)
-
-    if not document:
-        raise HTTPException(
-            status_code=HTTPStatus.BAD_REQUEST,
-            detail=f'The Document with id "{document_id}" is not found'
-        )
-
-    if document.user_id != user.id and not user.is_superuser:
-        raise HTTPException(
-            status_code=HTTPStatus.FORBIDDEN,
-            detail='You can not modify others\' documents!'
-        )
-    return document
