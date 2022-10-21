@@ -32,7 +32,7 @@ async def execute_pdf_generation_process(
     doc_title: str
 ):
     transformed_text = await execute_transformation_process(
-        text_to_transform
+        text_to_transform, output_type='markdown'
     )
     new_pdf = PDF()
     new_pdf.add_page()
