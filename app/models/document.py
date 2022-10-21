@@ -10,7 +10,7 @@ class Document(Base):
     title = Column(
         String(256), default='Untitled Document', nullable=False
     )
-    text = Column(Text, nullable=False)
+    text = Column(Text, default='Enter your text', nullable=False)
     create_date = Column(DateTime, default=datetime.now, nullable=False)
     user_id = Column(Integer, ForeignKey(
         'user.id', name='fk_document_user_id_user'
