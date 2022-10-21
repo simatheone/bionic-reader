@@ -1,18 +1,21 @@
 from http import HTTPStatus
 from typing import List
 
-from fastapi import APIRouter, Depends, Body
-# from fastapi.responses import FileResponse
+from fastapi import APIRouter, Depends
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import FileResponse, JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.validators import (check_document_before_edit,
-                                check_document_exists_and_user_is_owner)
+from app.api.validators import check_document_exists_and_user_is_owner
 from app.core.db import get_async_session
 from app.core.user import current_user
 from app.crud.document import document_crud
 from app.models import User
-from app.schemas.document import DocumentCreate, DocumentDB, DocumentUpdate
-# from app.services.text_transformation import execute_transformation_process
+from app.schemas.document import (
+    DocumentCreate, DocumentInfo, DocumentUpdate,
+    DocumentResponse, DocumentTransformRequest
+)
+from app.services.text_transformation import execute_transformation_process
 # from app.services.pdf_generator import execute_pdf_generation_process
 
 router = APIRouter()
@@ -20,8 +23,7 @@ router = APIRouter()
 
 @router.get(
     '/my_documents',
-    response_model=List[DocumentDB],
-    response_model_exclude={'create_date', 'user_id'},
+    response_model=List[DocumentResponse],
     dependencies=[Depends(current_user)]
 )
 async def get_all_user_documents_with_truncated_text(
@@ -43,8 +45,7 @@ async def get_all_user_documents_with_truncated_text(
 
 @router.get(
     '/{document_id}',
-    response_model=DocumentDB,
-    response_model_exclude={'create_date', 'user_id'},
+    response_model=DocumentResponse,
     dependencies=[Depends(current_user)]
 )
 async def get_a_single_document(
@@ -82,16 +83,15 @@ async def get_a_single_document(
 #     text_to_transform = document.text
 #     pdf_file_resp = await execute_pdf_generation_process(
 #         text_to_transform, document.title)  # pyright: ignore
+#     headers = {'Content-Disposition': 'attachment; filename="out.pdf"'}
 #     return FileResponse(
-#         pdf_file_resp, media_type='application/pdf')   # pyright: ignore
+#         pdf_file_resp, headers=headers, media_type='application/pdf')   # pyright: ignore
 
 
 @router.post(
     '/',
-    response_model=DocumentDB,
-    response_model_exclude={
-        'title', 'text', 'create_date', 'user_id'
-    },
+    response_model=DocumentResponse,
+    response_model_exclude={'title', 'text'},
     status_code=HTTPStatus.CREATED,
     dependencies=[Depends(current_user)]
 )
@@ -106,7 +106,6 @@ async def create_new_document(
     Fields to return:
     - **id**: Document id.
     """
-    # FIX: RESPONSE CODE 201
     new_document = await document_crud.create(
         object_in=document, user=user, session=session
     )
@@ -115,19 +114,22 @@ async def create_new_document(
 
 @router.post('/transform')
 async def transform_text(
-    text: str
+    document: DocumentTransformRequest
 ):
     """Returns transfromed text as a string with html tags inside."""
-    # transformed_text = await execute_transformation_process(
-    #     text
-    # )
-    return {'text': f'<div><b>{text}</b></div>'}
+    document_data = jsonable_encoder(document)
+    transformed_text = None
+    if document.text:
+        transformed_text = await execute_transformation_process(
+            document_data['text']
+        )
+    document_data.update({'text': transformed_text})
+    return JSONResponse(content=document_data)
 
 
 @router.patch(
     '/{document_id}',
-    response_model=DocumentDB,
-    response_model_exclude={'user_id', 'create_date'},
+    response_model=DocumentResponse,
     dependencies=[Depends(current_user)]
 )
 async def partially_update_document(
@@ -146,7 +148,7 @@ async def partially_update_document(
     - **create_date**: Document create date;
     - **user_id**: User id related to the document.
     """
-    document = await check_document_before_edit(
+    document = await check_document_exists_and_user_is_owner(
         document_id=document_id,
         user=user,
         session=session
@@ -161,7 +163,7 @@ async def partially_update_document(
 
 @router.delete(
     '/{document_id}',
-    response_model=DocumentDB,
+    response_model=DocumentInfo,
     dependencies=[Depends(current_user)]
 )
 async def delete_document(
@@ -179,6 +181,10 @@ async def delete_document(
     - **create_date**: Document create date;
     - **user_id**: User id related to the document.
     """
-    document = await check_document_before_edit(document_id, user, session)
+    document = await check_document_exists_and_user_is_owner(
+        document_id=document_id,
+        user=user,
+        session=session
+    )
     document = await document_crud.remove(document, session)
     return document
