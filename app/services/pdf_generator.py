@@ -41,7 +41,12 @@ async def execute_pdf_generation_process(
     )
     new_pdf = PDF()
     new_pdf.add_page()
-    new_pdf.set_font('Times', size=14)
+    # Add try/except that pdf builds with that text font
+    # pdf.errors.FPDFUnicodeEncodingException: Character "’"
+    # at index 389 in text is outside the range of characters supported
+    # by the font used: "times". Please consider using a Unicode font.
+    # new_pdf.set_font('Times', size=14)
+    new_pdf.set_font(size=14)
     new_pdf.multi_cell(
         w=0,
         h=10,
