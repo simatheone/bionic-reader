@@ -46,7 +46,7 @@ async def execute_pdf_generation_process(
     # at index 389 in text is outside the range of characters supported
     # by the font used: "times". Please consider using a Unicode font.
     # new_pdf.set_font('Times', size=14)
-    new_pdf.set_font(size=14)
+    new_pdf.set_font('Latin-1', size=14)
     new_pdf.multi_cell(
         w=0,
         h=10,
