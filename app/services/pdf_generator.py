@@ -1,25 +1,30 @@
+from pathlib import Path
+
 from fpdf import FPDF
 
 from app.services.text_transformation import execute_transformation_process
+
+BASE_DIR = Path(__file__).parent.parent
+STATIC_FOLDER = BASE_DIR.joinpath('static')
 
 
 class PDF(FPDF):
     def header(self):
         self.image(
-            'background_for_pdf.png',
+            STATIC_FOLDER.joinpath('pdf_background.png'),
             x=0,
             y=0,
             w=210,
             h=297
         )
         self.image(
-            'Bionic-Reader-img.jpg',
+            STATIC_FOLDER.joinpath('Bionic-Reader-img.jpg'),
             x=10,
             y=8,
             w=33,
             title='Bionic Reader image'
         )
-        self.ln(10)
+        self.ln(20)
 
     def footer(self):
         self.set_y(-15)
@@ -28,11 +33,11 @@ class PDF(FPDF):
 
 
 async def execute_pdf_generation_process(
-    text_to_transform: str,
-    doc_title: str
+    text_to_transform: str
 ):
     transformed_text = await execute_transformation_process(
-        text_to_transform, output_type='markdown'
+        text_to_transform,
+        output_type='markdown'
     )
     new_pdf = PDF()
     new_pdf.add_page()
@@ -45,4 +50,5 @@ async def execute_pdf_generation_process(
         new_x="LMARGIN",
         new_y="NEXT"
     )
-    return new_pdf.output(f'{doc_title}.pdf')
+    pdf_file = new_pdf.output()
+    return pdf_file

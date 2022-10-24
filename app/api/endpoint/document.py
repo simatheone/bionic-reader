@@ -3,7 +3,7 @@ from typing import List
 
 from fastapi import APIRouter, Depends
 from fastapi.encoders import jsonable_encoder
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import Response, JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.validators import check_document_exists_and_user_is_owner
@@ -16,7 +16,7 @@ from app.schemas.document import (
     DocumentResponse, DocumentTransformRequest
 )
 from app.services.text_transformation import execute_transformation_process
-# from app.services.pdf_generator import execute_pdf_generation_process
+from app.services.pdf_generator import execute_pdf_generation_process
 
 router = APIRouter()
 
@@ -67,33 +67,41 @@ async def get_a_single_document(
     return document
 
 
-# @router.get(
-#     '/download/{document_id}',
-#     responses={200: {'content': {'application/pdf': {}}}},
-#     dependencies=[Depends(current_user)]
-# )
-# async def download_document(
-#     document_id: int,
-#     user: User = Depends(current_user),
-#     session: AsyncSession = Depends(get_async_session)
-# ):
-#     document = await check_document_exists_and_user_is_owner(
-#         document_id, user, session
-#     )
-#     text_to_transform = document.text
-#     pdf_file_resp = await execute_pdf_generation_process(
-#         text_to_transform, document.title)  # pyright: ignore
-#     headers = {'Content-Disposition': 'attachment; filename="out.pdf"'}
-#     return FileResponse(
-#         pdf_file_resp, headers=headers, media_type='application/pdf')   # pyright: ignore
+@router.get(
+    '/download/{document_id}',
+    dependencies=[Depends(current_user)]
+)
+async def download_document(
+    document_id: int,
+    user: User = Depends(current_user),
+    session: AsyncSession = Depends(get_async_session)
+):
+    document = await check_document_exists_and_user_is_owner(
+        document_id, user, session
+    )
+    document_title = getattr(document, 'title')
+    document_text = getattr(document, 'text')
+
+    pdf_file_bytearray = await execute_pdf_generation_process(
+        document_text
+    )
+    pdf_file_as_bytes = bytes(pdf_file_bytearray)
+    headers = {
+        'Content-Disposition': f'attachment; filename="{document_title}.pdf"'
+    }
+    return Response(
+        content=pdf_file_as_bytes,
+        headers=headers,
+        media_type='application/pdf'
+    )
 
 
 @router.post(
     '/',
     response_model=DocumentResponse,
     response_model_exclude={'title', 'text'},
-    status_code=HTTPStatus.CREATED,
-    dependencies=[Depends(current_user)]
+    dependencies=[Depends(current_user)],
+    status_code=HTTPStatus.CREATED
 )
 async def create_new_document(
     document: DocumentCreate,
