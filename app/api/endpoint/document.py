@@ -1,9 +1,9 @@
 from http import HTTPStatus
-from typing import List
 
 from fastapi import APIRouter, Depends
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import Response, JSONResponse
+from fastapi_pagination import Page, Params, paginate
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.validators import check_document_exists_and_user_is_owner
@@ -23,24 +23,31 @@ router = APIRouter()
 
 @router.get(
     '/my_documents',
-    response_model=List[DocumentResponse],
+    response_model=Page[DocumentResponse],
     dependencies=[Depends(current_user)]
 )
 async def get_all_user_documents_with_truncated_text(
     user: User = Depends(current_user),
-    session: AsyncSession = Depends(get_async_session)
+    session: AsyncSession = Depends(get_async_session),
+    params: Params = Depends()
 ):
-    """Returns a list with all user's documents.
+    """Returns a paginated page with user's documents.
+
     Endpoint is available for authenticated users.
 
     Fields to return:
-    - **id**: Document id;
-    - **title**: Document title;
-    - **text**: Document text (truncated to 30 chars).
+    - **items**:
+        - **title**: Document's title;
+        - **text**: Document's text (truncated to 30 chars).
+        - **id**: Document's id.
+    - **total**: total amount of documents;
+    - **page**: current page number;
+    - **size**: amount of documents on page.
     """
-    return await document_crud.get_all_user_documents_with_truncated_text(
+    documents = await document_crud.get_all_user_documents_with_truncated_text(
         user, session
     )
+    return paginate(documents, params)
 
 
 @router.get(
@@ -57,9 +64,9 @@ async def get_a_single_document(
     Endpoint is available for the owner of the document.
 
     Fields to return:
-    - **id**: Document id;
-    - **title**: Document title;
-    - **text**: Document text.
+    - **title**: Document's title;
+    - **text**: Document's text.
+    - **id**: Document's id;
     """
     document = await check_document_exists_and_user_is_owner(
         document_id, user, session
@@ -112,7 +119,7 @@ async def create_new_document(
     Endpoint is available for authenticated users.
 
     Fields to return:
-    - **id**: Document id.
+    - **id**: Document's id.
     """
     new_document = await document_crud.create(
         object_in=document, user=user, session=session
@@ -124,7 +131,12 @@ async def create_new_document(
 async def transform_text(
     document: DocumentTransformRequest
 ):
-    """Returns transfromed text as a string with html tags inside."""
+    """Returns transfromed text as a string with html tags inside.
+
+       Fields to return:
+       - **text**: transformed text with hmtl bold tags and
+       line breakes inside.
+    """
     document_data = jsonable_encoder(document)
     transformed_text = None
     if document.text:
@@ -150,11 +162,8 @@ async def partially_update_document(
     Endpoint is available for the owner of the document.
 
     Fields to return:
-    - **title**: Document title;
-    - **text**: Document text;
-    - **id**: Document id;
-    - **create_date**: Document create date;
-    - **user_id**: User id related to the document.
+    - **title**: Document's title;
+    - **text**: Document's text;
     """
     document = await check_document_exists_and_user_is_owner(
         document_id=document_id,
