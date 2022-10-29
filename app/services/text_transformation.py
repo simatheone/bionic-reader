@@ -1,41 +1,50 @@
 import re
+from enum import Enum
 from math import ceil
-from typing import List
-
+from typing import List, Literal, Union
 
 REGEX_SPLIT_PATTERN = r'\b|(?!)\s'
-OPEN_TAG = 0
-CLOSE_TAG = 1
-NEW_LINE_TAG = 2
-TRANSFORMATION_OPTIONS = {
-    'html': ('<b>', '</b>', '<br />'),
-    'markdown': ('**', '**', '\n')
-}
 
 
-def split_text_by_newlines(text: str) -> List[str]:
+class FormatTags(Enum):
+    HTML_OPEN_B_TAG = '<b>'
+    HTML_CLOSE_B_TAG = '</b>'
+    HTML_NEW_LINE_TAG = '<br />'
+    MARKDOWN_B_TAG = '**'
+    MARKDOWN_NEW_LINE_TAG = '\n'
+
+
+def _split_text_by_newlines(text: str) -> List[str]:
     splitted_text = text.split('\n')
     return splitted_text
 
 
-def insert_bold_tag_in_word(
-    word: str,
+def _insert_bold_tag_in_word(
+    word_to_transform: str,
     open_tag: str,
     close_tag: str
 ) -> str:
-    if len(word) == 1:
-        word_to_return = f'{open_tag}' + word + f'{close_tag}'
-    if len(word) == 3:
-        word_to_return = f'{open_tag}' + word[0] + f'{close_tag}' + word[1:]
-    else:
-        nums = ceil(len(word) / 2)
-        word_to_return = (
-            f'{open_tag}' + word[:nums] + f'{close_tag}' + word[nums:]
+    transformed_word = None
+    word_length = len(word_to_transform)
+    if word_length == 1:
+        transformed_word = (
+            f'{open_tag}' + word_to_transform + f'{close_tag}'
         )
-    return word_to_return
+    elif word_length == 3:
+        transformed_word = (
+            f'{open_tag}' + word_to_transform[0] +
+            f'{close_tag}' + word_to_transform[1:]
+        )
+    else:
+        last_bold_letter_idx = ceil(word_length / 2)
+        transformed_word = (
+            f'{open_tag}' + word_to_transform[:last_bold_letter_idx] +
+            f'{close_tag}' + word_to_transform[last_bold_letter_idx:]
+        )
+    return transformed_word
 
 
-def transform_text(
+def _transform_text(
     paragraph: str,
     open_tag: str,
     close_tag: str
@@ -49,7 +58,7 @@ def transform_text(
         transformed_string = []
         for _ in splitted_word_or_symbol:
             if _.isalpha():
-                _ = insert_bold_tag_in_word(_, open_tag, close_tag)
+                _ = _insert_bold_tag_in_word(_, open_tag, close_tag)
                 transformed_string.append(_)
             else:
                 transformed_string.append(_)
@@ -61,16 +70,22 @@ def transform_text(
 
 async def execute_transformation_process(
     text_to_transform: str,
-    output_type: str = 'html'
+    output_type: Union[Literal['html'], Literal['markdown']] = 'html'
 ) -> str:
-    paragraphs = split_text_by_newlines(text_to_transform)
-    open_tag = TRANSFORMATION_OPTIONS[output_type][OPEN_TAG]
-    close_tag = TRANSFORMATION_OPTIONS[output_type][CLOSE_TAG]
-    new_line_tag = TRANSFORMATION_OPTIONS[output_type][NEW_LINE_TAG]
+    paragraphs = _split_text_by_newlines(text_to_transform)
+
+    open_tag = close_tag = new_line_tag = None
+    if output_type == 'html':
+        open_tag = FormatTags.HTML_OPEN_B_TAG.value
+        close_tag = FormatTags.HTML_CLOSE_B_TAG.value
+        new_line_tag = FormatTags.HTML_NEW_LINE_TAG.value
+    else:
+        open_tag = close_tag = FormatTags.MARKDOWN_B_TAG.value
+        new_line_tag = FormatTags.MARKDOWN_NEW_LINE_TAG.value
 
     fully_transformed_text = []
     for paragraph in paragraphs:
-        transformed_text = transform_text(
+        transformed_text = _transform_text(
             paragraph, open_tag, close_tag
         )
         fully_transformed_text.append(transformed_text)
