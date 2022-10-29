@@ -66,7 +66,7 @@ async def get_a_single_document(
     Fields to return:
     - **title**: Document's title;
     - **text**: Document's text.
-    - **id**: Document's id;
+    - **id**: Document's id.
     """
     document = await check_document_exists_and_user_is_owner(
         document_id, user, session
@@ -163,7 +163,7 @@ async def partially_update_document(
 
     Fields to return:
     - **title**: Document's title;
-    - **text**: Document's text;
+    - **text**: Document's text.
     """
     document = await check_document_exists_and_user_is_owner(
         document_id=document_id,
