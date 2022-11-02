@@ -26,12 +26,13 @@ class CRUDDocument(
             select(
                 Document.id,
                 Document.title,
-                func.substr(Document.text, 1, 30)
+                func.substr(Document.text, 1, 30).label('text')
             ).where(
                 Document.user_id == user.id,
             ).order_by(desc(Document.create_date))
         )
         db_object = db_object.all()
+        print(db_object)
 
         return db_object
 
