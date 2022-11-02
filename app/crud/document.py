@@ -1,6 +1,6 @@
 from typing import List
 
-from sqlalchemy import select, desc
+from sqlalchemy import select, desc, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.base import CRUDBase
@@ -24,16 +24,14 @@ class CRUDDocument(
     ) -> List[Document]:
         db_object = await session.execute(
             select(
-                Document
+                Document.id,
+                Document.title,
+                func.substr(Document.text, 1, 30)
             ).where(
                 Document.user_id == user.id,
             ).order_by(desc(Document.create_date))
         )
-        db_object = db_object.scalars().all()
-
-        for _ in db_object:
-            if len(_.text) > 30:
-                _.text = _.text[:30] + '...'
+        db_object = db_object.all()
 
         return db_object
 

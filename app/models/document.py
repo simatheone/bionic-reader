@@ -13,7 +13,7 @@ class Document(Base):
     text = Column(Text, default='Enter your text', nullable=False)
     create_date = Column(DateTime, default=datetime.now, nullable=False)
     user_id = Column(Integer, ForeignKey(
-        'user.id', name='fk_document_user_id_user'
+            'user.id', name='fk_document_user_id_user'
         ), nullable=False
     )
 
