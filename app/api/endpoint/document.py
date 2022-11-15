@@ -127,7 +127,10 @@ async def create_new_document(
     return new_document
 
 
-@router.post('/transform')
+@router.post(
+    '/transform',
+    response_model=DocumentResponse
+)
 async def transform_text(
     document: DocumentTransformRequest
 ):
