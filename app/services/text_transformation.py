@@ -15,6 +15,7 @@ class FormatTags(Enum):
 
 
 def _split_text_by_newlines(text: str) -> List[str]:
+    """Split incoming text by newlines."""
     splitted_text = text.split('\n')
     return splitted_text
 
@@ -24,6 +25,30 @@ def _insert_bold_tag_in_word(
     open_tag: str,
     close_tag: str
 ) -> str:
+    """
+    Transforms the word by inserting a bold tag in
+    spicific place in word.
+
+    The base logic of adding bold tags.
+    If word's length is equal to 1 then bold tags will be added
+    at both sides of a word.
+    If word's length is equal to 3 then bold tag will be added
+    before and after first letter.
+    For words which length is more then 3 symbols logic is:
+        The last index of character is calculated by the formula:
+            -> last_char_idx = ceil(word's length / 2)
+        The bold tags will be added before the word and after
+        last_char_idx (excluded). The rest part of the word will
+        stay tha same (not transformed).
+
+    Example for the file output_type = 'html':
+        word = 'a' -> transforms to: <b>a</b>
+        word = 'dog' -> transforms to: <b>d</b>og
+        word = 'home' -> transforms to: <b>ho</b>me
+        word = 'hello' -> transforms to: <b>hel</b>lo
+    Same logic is provided for the output_type = 'markdown'.
+    HTML tags will be replaced with markdown tags.
+    """
     transformed_word = None
     word_length = len(word_to_transform)
     if word_length == 1:
