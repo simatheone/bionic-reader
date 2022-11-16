@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Optional
+from uuid import UUID
 
 from pydantic import BaseModel, Extra, Field
 
@@ -30,16 +31,16 @@ class DocumentTransformRequest(BaseModel):
 
 
 class DocumentInfo(DocumentCreate):
-    id: int
+    id: UUID
     create_date: datetime
-    user_id: Optional[int]
+    user_id: Optional[UUID]
 
     class Config:
         orm_mode = True
 
 
 class DocumentResponse(DocumentCreate):
-    id: int
+    id: UUID
 
     class Config:
         orm_mode = True

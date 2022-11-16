@@ -1,8 +1,6 @@
 import asyncio
-import os
 from logging.config import fileConfig
 
-from dotenv import load_dotenv
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
@@ -10,12 +8,11 @@ from sqlalchemy.ext.asyncio import AsyncEngine
 
 from alembic import context
 
-from app.core.base import Base
-
-load_dotenv('.env')
+from app.db.settings import settings
+from app.models import Base
 
 config = context.config
-config.set_main_option('sqlalchemy.url', os.environ['DATABASE_URL'])
+config.set_main_option('sqlalchemy.url', settings.database_url)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -58,14 +55,14 @@ def run_migrations_offline() -> None:
         context.run_migrations()
 
 
-def do_run_migrations(connection: Connection) -> None:
+def do_run_migrations(connection: Connection):
     context.configure(connection=connection, target_metadata=target_metadata)
 
     with context.begin_transaction():
         context.run_migrations()
 
 
-async def run_migrations_online() -> None:
+async def run_migrations_online():
     """Run migrations in 'online' mode.
 
     In this scenario we need to create an Engine

@@ -6,7 +6,7 @@ from typing import List, Literal, Union
 REGEX_SPLIT_PATTERN = r'\b|(?!)\s'
 
 
-class FormatTags(Enum):
+class FormatTags(str, Enum):
     HTML_OPEN_B_TAG = '<b>'
     HTML_CLOSE_B_TAG = '</b>'
     HTML_NEW_LINE_TAG = '<br />'

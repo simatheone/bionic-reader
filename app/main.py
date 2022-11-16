@@ -2,8 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routers import main_router
-from app.core.config import settings
-from app.core.init_db import create_first_superuser
+from app.db.init_db import create_first_superuser
+from app.db.settings import settings
 
 app = FastAPI(
     title=settings.app_title,

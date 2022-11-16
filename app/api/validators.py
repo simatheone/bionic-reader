@@ -1,20 +1,21 @@
 from http import HTTPStatus
+from uuid import UUID
 
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.crud.document import document_crud
-from app.models import Document
-from app.models.user import User
+from app.crud_document import document_crud
+from app.models import Document, User
 
 
 async def check_document_exists_and_user_is_owner(
-    document_id: int,
+    document_id: UUID,
     user: User,
     session: AsyncSession
 ) -> Document:
     document = await document_crud.get(
-        object_id=document_id, session=session
+        document_id=document_id,
+        session=session
     )
     if not document:
         raise HTTPException(
