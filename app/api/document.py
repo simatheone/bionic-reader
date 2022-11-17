@@ -42,7 +42,7 @@ async def get_all_user_documents_with_truncated_text(
     - **items**:
         - **title**: Document's title;
         - **text**: Document's text (truncated to 30 chars).
-        - **id**: Document's id.
+        - **id**: Document's uuid.
     - **total**: total amount of documents;
     - **page**: current page number;
     - **size**: amount of documents on page.
@@ -69,7 +69,7 @@ async def get_a_single_document(
     Fields to return:
     - **title**: Document's title;
     - **text**: Document's text.
-    - **id**: Document's id.
+    - **id**: Document's uuid.
     """
     document = await check_document_exists_and_user_is_owner(
         document_id, user, session
@@ -122,7 +122,7 @@ async def create_new_document(
     Endpoint is available for authenticated users.
 
     Fields to return:
-    - **id**: Document's id.
+    - **id**: Document's uuid.
     """
     return await document_crud.create(
         document_in=document,
@@ -198,11 +198,11 @@ async def delete_document(
     Endpoint is available for the owner of the document.
 
     Fields to return:
-    - **title**: Document title;
-    - **text**: Document text;
-    - **id**: Document id;
-    - **create_date**: Document create date;
-    - **user_id**: User id related to the document.
+    - **title**: Document's title;
+    - **text**: Document's text;
+    - **id**: Document's uuid;
+    - **created_at**: Document's create date;
+    - **user_id**: User's uuid related to the document.
     """
     document = await check_document_exists_and_user_is_owner(
         document_id=document_id,
