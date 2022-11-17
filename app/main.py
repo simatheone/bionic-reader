@@ -6,16 +6,16 @@ from app.db.init_db import create_first_superuser
 from app.db.settings import settings
 
 app = FastAPI(
-    title=settings.app_title,
-    description=settings.app_description
+    title=settings.APP_TITLE,
+    description=settings.APP_DESCRIPTION
 )
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.allow_origins.split(','),
-    allow_credentials=settings.allow_credentials,
-    allow_methods=settings.allow_methods.split(','),
-    allow_headers=settings.allow_headers.split(',')
+    allow_origins=settings.ALLOW_ORIGINS.split(','),
+    allow_credentials=settings.ALLOW_CREDENTIALS,
+    allow_methods=settings.ALLOW_METHODS.split(','),
+    allow_headers=settings.ALLOW_HEADERS.split(',')
 )
 
 app.include_router(main_router)

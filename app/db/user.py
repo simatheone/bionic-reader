@@ -37,18 +37,18 @@ async def get_user_db(session: AsyncSession = Depends(get_async_session)):
 
 
 cookie_transport = CookieTransport(
-    cookie_max_age=settings.cookie_max_age,
-    cookie_name=settings.cookie_name,
-    cookie_secure=settings.cookie_secure,
-    cookie_httponly=settings.cookie_httponly,
-    cookie_samesite=settings.cookie_samesite,
+    cookie_max_age=settings.COOKIE_MAX_AGE,
+    cookie_name=settings.COOKIE_NAME,
+    cookie_secure=settings.COOKIE_SECURE,
+    cookie_httponly=settings.COOKIE_HTTPONLY,
+    cookie_samesite=settings.COOKIE_SAMESITE,
 )
 
 
 def get_jwt_strategy() -> JWTStrategy:
     return JWTStrategy(
-        secret=settings.secret,
-        lifetime_seconds=settings.lifetime_seconds
+        secret=settings.SECRET,
+        lifetime_seconds=settings.LIFETIME_SECONDS
     )
 
 

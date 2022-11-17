@@ -1,6 +1,3 @@
-
-from typing import Optional
-
 from pydantic import BaseSettings, EmailStr
 
 
@@ -8,49 +5,44 @@ class Settings(BaseSettings):
     """Project settings."""
 
     # Application settings
-    app_title: str = 'Bionic Reader'
-    app_description: str = 'Bionic Reader'
-    secret: str = 'SECRET'
+    APP_TITLE: str = 'Bionic Reader'
+    APP_DESCRIPTION: str = 'Bionic Reader'
+    SECRET: str = 'SECRET'
 
     # Database settings
-    db_url: str
-    # postgres_db: str
-    # db_host: str
-    # postgres_password: str
-    # db_port: str
-    # postgres_user: str
-    first_superuser_email: EmailStr
-    first_superuser_password: str
-    first_name_superuser: str
+    PGDATABASE: str
+    PGHOST: str
+    PGPASSWORD: str
+    PGPORT: str
+    PGUSER: str
+    FIRST_SUPERUSER_EMAIL: EmailStr
+    FIRST_SUPERUSER_PASSWORD: str
+    FIRST_NAME_SUPERUSER: str
 
     # Cors settings
-    allow_origins: str
-    allow_credentials: bool
-    allow_methods: str
-    allow_headers: str
+    ALLOW_ORIGINS: str
+    ALLOW_CREDENTIALS: bool
+    ALLOW_METHODS: str
+    ALLOW_HEADERS: str
 
     # Cookie settings
-    cookie_max_age: int
-    cookie_name: str
-    cookie_secure: bool
-    cookie_httponly: bool
-    cookie_samesite: str
-    cookie_domain: Optional[str]
+    COOKIE_MAX_AGE: int
+    COOKIE_NAME: str
+    COOKIE_SECURE: bool
+    COOKIE_HTTPONLY: bool
+    COOKIE_SAMESITE: str
 
     # JWT settings
-    lifetime_seconds: int
-
-    debug: bool
+    LIFETIME_SECONDS: int
 
     @property
     def database_url(self):
-        if bool(self.debug) is True:
-            return self.db_url
-        # return (
-        #     f"postgresql+asyncpg://"
-        #     f"{self.postgres_user}:{self.postgres_password}"
-        #     f"@{self.db_host}:{self.db_port}/{self.postgres_db}"
-        # )
+
+        return (
+            f"postgresql+asyncpg://"
+            f"{self.PGUSER}:{self.PGPASSWORD}"
+            f"@{self.PGHOST}:{self.PGPORT}/{self.PGDATABASE}"
+        )
 
     class Config:
         env_file = '.env'

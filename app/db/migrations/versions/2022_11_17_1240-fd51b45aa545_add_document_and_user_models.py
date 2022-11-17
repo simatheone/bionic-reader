@@ -1,8 +1,8 @@
 """Add Document and User models
 
-Revision ID: ea5a7de37522
+Revision ID: fd51b45aa545
 Revises:
-Create Date: 2022-11-16 19:52:27.940272
+Create Date: 2022-11-17 12:40:35.313269
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = 'ea5a7de37522'
+revision = 'fd51b45aa545'
 down_revision = None
 branch_labels = None
 depends_on = None

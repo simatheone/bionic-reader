@@ -79,7 +79,7 @@ class CRUDDocument:
                 func.substr(self.model.text, 1, 30).label('text')
             ).where(
                 self.model.user_id == user.id,
-            ).order_by(desc(self.model.create_date))
+            ).order_by(desc(self.model.created_at))
         )
         db_documents = db_documents.all()
         return db_documents
