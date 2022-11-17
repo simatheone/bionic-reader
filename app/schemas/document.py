@@ -40,5 +40,5 @@ class DocumentResponse(DocumentCreate, ORMMode):
 
 
 class DocumentInfo(DocumentResponse):
-    create_date: datetime
+    created_at: datetime
     user_id: Optional[UUID]
