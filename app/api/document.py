@@ -12,9 +12,9 @@ from app.crud_document import document_crud
 from app.db.db import get_async_session
 from app.db.user import current_user
 from app.models import User
-from app.schemas.document import (DocumentCreate, DocumentInfo,
-                                  DocumentResponse, DocumentTransformRequest,
-                                  DocumentUpdate)
+from app.schemas.document import (DocumentBase, DocumentCreate,
+                                  DocumentInfo, DocumentResponse,
+                                  DocumentTransformRequest)
 from app.services.pdf_generator import execute_pdf_generation_process
 from app.services.text_transformation import execute_transformation_process
 
@@ -161,7 +161,7 @@ async def transform_text(
 )
 async def partially_update_document(
     document_id: UUID,
-    object_in: DocumentUpdate,
+    object_in: DocumentBase,
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session)
 ):

@@ -10,7 +10,7 @@ class ORMMode(BaseModel):
         orm_mode = True
 
 
-class DocumentBaseSchema(BaseModel):
+class DocumentBase(BaseModel):
     title: Optional[str] = Field(None, min_length=1, max_length=256)
     text: Optional[str] = Field(None, min_length=1)
 
@@ -18,17 +18,13 @@ class DocumentBaseSchema(BaseModel):
         extra = Extra.forbid
 
 
-class DocumentCreate(DocumentBaseSchema):
+class DocumentCreate(DocumentBase):
     title: str = Field(
         'Untitled Document',
         min_length=1,
         max_length=256
     )
     text: str = Field('Enter your text', min_length=1)
-
-
-class DocumentUpdate(DocumentBaseSchema):
-    pass
 
 
 class DocumentTransformRequest(BaseModel):

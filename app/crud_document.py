@@ -5,7 +5,7 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy import desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.schemas.document import DocumentCreate, DocumentUpdate
+from app.schemas.document import DocumentBase, DocumentCreate
 
 from .models import Document, User
 
@@ -44,7 +44,7 @@ class CRUDDocument:
     async def update(
         self,
         db_document: Document,
-        document_update: DocumentUpdate,
+        document_update: DocumentBase,
         session: AsyncSession
     ) -> Document:
         document_data = jsonable_encoder(db_document)
