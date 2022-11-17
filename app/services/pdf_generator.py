@@ -30,7 +30,9 @@ class PDF(FPDF, HTMLMixin):
         self.ln(20)
 
     def create_pdf_body(self, transformed_text):
-        font_path_inter_regular = (FONTS_FOLDER / 'Inter-Regular.ttf').as_posix()
+        font_path_inter_regular = (
+            FONTS_FOLDER / 'Inter-Regular.ttf'
+        ).as_posix()
         font_path_inter_bold = (FONTS_FOLDER / 'Inter-Bold.ttf').as_posix()
         self.add_page()
 

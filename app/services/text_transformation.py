@@ -23,8 +23,7 @@ def split_text_by_newlines(text: str) -> List[str]:
 def insert_bold_tag_in_word(
     word_to_transform: str, open_tag: str, close_tag: str
 ) -> str:
-    """
-    Transforms the word by inserting a bold tag in
+    """Transforms the word by inserting a bold tag in
     spicific place in word.
 
     The base logic of adding bold tags.
@@ -34,7 +33,7 @@ def insert_bold_tag_in_word(
     before and after first letter.
     For words which length is more then 3 symbols logic is:
         The last index of character is calculated by the formula:
-            -> last_char_idx = ceil(word's length / 2)
+            last_char_idx = ceil(word's length / 2)
         The bold tags will be added before the word and after
         last_char_idx (excluded). The rest part of the word will
         stay tha same (not transformed).
