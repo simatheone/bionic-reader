@@ -1,10 +1,11 @@
 from typing import Optional
+from uuid import UUID
 
-from pydantic import Field
 from fastapi_users import schemas
+from pydantic import Field
 
 
-class UserRead(schemas.BaseUser[int]):
+class UserRead(schemas.BaseUser[UUID]):
     first_name: str
 
 

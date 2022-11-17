@@ -1,7 +1,13 @@
 from datetime import datetime
 from typing import Optional
+from uuid import UUID
 
 from pydantic import BaseModel, Extra, Field
+
+
+class ORMMode(BaseModel):
+    class Config:
+        orm_mode = True
 
 
 class DocumentBaseSchema(BaseModel):
@@ -29,17 +35,10 @@ class DocumentTransformRequest(BaseModel):
     text: str = Field(min_length=1)
 
 
-class DocumentInfo(DocumentCreate):
-    id: int
+class DocumentResponse(DocumentCreate, ORMMode):
+    id: UUID
+
+
+class DocumentInfo(DocumentResponse):
     create_date: datetime
-    user_id: Optional[int]
-
-    class Config:
-        orm_mode = True
-
-
-class DocumentResponse(DocumentCreate):
-    id: int
-
-    class Config:
-        orm_mode = True
+    user_id: Optional[UUID]

@@ -18,14 +18,14 @@ class PDF(FPDF, HTMLMixin):
             y=0,
             w=210,
             h=297,
-            alt_text='grey background'
+            alt_text='grey background',
         )
         self.image(
             STATIC_FOLDER / BIONIC_READER_IMAGE,
             x=10,
             y=8,
             w=33,
-            alt_text='Bionic Reader image'
+            alt_text='Bionic Reader image',
         )
         self.ln(20)
 
@@ -33,36 +33,20 @@ class PDF(FPDF, HTMLMixin):
         font_path_inter_regular = (
             FONTS_FOLDER / 'Inter-Regular.ttf'
         ).as_posix()
-        font_path_inter_bold = (
-            FONTS_FOLDER / 'Inter-Bold.ttf'
-        ).as_posix()
+        font_path_inter_bold = (FONTS_FOLDER / 'Inter-Bold.ttf').as_posix()
         self.add_page()
 
-        self.add_font(
-            fname=font_path_inter_bold,
-            family='Inter',
-            style='B'
-        )
-        self.add_font(
-            fname=font_path_inter_regular,
-            family='Inter',
-            style=''
-        )
-        self.set_font(
-            'zapfdingbats',
-            size=12
-        )
-        self.set_font(
-            'Inter',
-            size=12
-        )
+        self.add_font(fname=font_path_inter_bold, family='Inter', style='B')
+        self.add_font(fname=font_path_inter_regular, family='Inter', style='')
+        self.set_font('zapfdingbats', size=12)
+        self.set_font('Inter', size=12)
         self.multi_cell(
             w=0,
             h=10,
             txt=transformed_text,
             markdown=True,
             new_x="LMARGIN",
-            new_y="NEXT"
+            new_y="NEXT",
         )
 
     def footer(self):
@@ -83,12 +67,9 @@ class PDF(FPDF, HTMLMixin):
         self.cell(0, 0, f'Page {self.page_no()}', align='C')
 
 
-async def execute_pdf_generation_process(
-    text_to_transform: str
-):
+async def execute_pdf_generation_process(text_to_transform: str):
     transformed_text = await execute_transformation_process(
-        text_to_transform,
-        output_type='markdown'
+        text_to_transform, output_type='markdown'
     )
     new_pdf = PDF()
     new_pdf.create_pdf_body(transformed_text)

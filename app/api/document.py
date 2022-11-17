@@ -1,24 +1,27 @@
 from http import HTTPStatus
+from uuid import UUID
 
 from fastapi import APIRouter, Depends
 from fastapi.encoders import jsonable_encoder
-from fastapi.responses import Response, JSONResponse
+from fastapi.responses import JSONResponse, Response
 from fastapi_pagination import Page, Params, paginate
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.validators import check_document_exists_and_user_is_owner
-from app.core.db import get_async_session
-from app.core.user import current_user
-from app.crud.document import document_crud
+from app.crud_document import document_crud
+from app.db.db import get_async_session
+from app.db.user import current_user
 from app.models import User
-from app.schemas.document import (
-    DocumentCreate, DocumentInfo, DocumentUpdate,
-    DocumentResponse, DocumentTransformRequest
-)
-from app.services.text_transformation import execute_transformation_process
+from app.schemas.document import (DocumentCreate, DocumentInfo,
+                                  DocumentResponse, DocumentTransformRequest,
+                                  DocumentUpdate)
 from app.services.pdf_generator import execute_pdf_generation_process
+from app.services.text_transformation import execute_transformation_process
 
-router = APIRouter()
+router = APIRouter(
+    prefix='/document',
+    tags=['Documents']
+)
 
 
 @router.get(
@@ -39,7 +42,7 @@ async def get_all_user_documents_with_truncated_text(
     - **items**:
         - **title**: Document's title;
         - **text**: Document's text (truncated to 30 chars).
-        - **id**: Document's id.
+        - **id**: Document's uuid.
     - **total**: total amount of documents;
     - **page**: current page number;
     - **size**: amount of documents on page.
@@ -56,7 +59,7 @@ async def get_all_user_documents_with_truncated_text(
     dependencies=[Depends(current_user)]
 )
 async def get_a_single_document(
-    document_id: int,
+    document_id: UUID,
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session)
 ):
@@ -66,7 +69,7 @@ async def get_a_single_document(
     Fields to return:
     - **title**: Document's title;
     - **text**: Document's text.
-    - **id**: Document's id.
+    - **id**: Document's uuid.
     """
     document = await check_document_exists_and_user_is_owner(
         document_id, user, session
@@ -79,7 +82,7 @@ async def get_a_single_document(
     dependencies=[Depends(current_user)]
 )
 async def download_document(
-    document_id: int,
+    document_id: UUID,
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session)
 ):
@@ -119,15 +122,19 @@ async def create_new_document(
     Endpoint is available for authenticated users.
 
     Fields to return:
-    - **id**: Document's id.
+    - **id**: Document's uuid.
     """
-    new_document = await document_crud.create(
-        object_in=document, user=user, session=session
+    return await document_crud.create(
+        document_in=document,
+        user=user,
+        session=session
     )
-    return new_document
 
 
-@router.post('/transform')
+@router.post(
+    '/transform',
+    response_model=DocumentResponse
+)
 async def transform_text(
     document: DocumentTransformRequest
 ):
@@ -153,7 +160,7 @@ async def transform_text(
     dependencies=[Depends(current_user)]
 )
 async def partially_update_document(
-    document_id: int,
+    document_id: UUID,
     object_in: DocumentUpdate,
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session)
@@ -170,12 +177,11 @@ async def partially_update_document(
         user=user,
         session=session
     )
-    document = await document_crud.update(
-        db_object=document,
-        object_in=object_in,
+    return await document_crud.update(
+        db_document=document,
+        document_update=object_in,
         session=session
     )
-    return document
 
 
 @router.delete(
@@ -184,7 +190,7 @@ async def partially_update_document(
     dependencies=[Depends(current_user)]
 )
 async def delete_document(
-    document_id: int,
+    document_id: UUID,
     user: User = Depends(current_user),
     session: AsyncSession = Depends(get_async_session)
 ):
@@ -192,11 +198,11 @@ async def delete_document(
     Endpoint is available for the owner of the document.
 
     Fields to return:
-    - **title**: Document title;
-    - **text**: Document text;
-    - **id**: Document id;
-    - **create_date**: Document create date;
-    - **user_id**: User id related to the document.
+    - **title**: Document's title;
+    - **text**: Document's text;
+    - **id**: Document's uuid;
+    - **created_at**: Document's create date;
+    - **user_id**: User's uuid related to the document.
     """
     document = await check_document_exists_and_user_is_owner(
         document_id=document_id,

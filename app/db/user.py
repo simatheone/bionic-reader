@@ -1,20 +1,21 @@
 from typing import Union
+from uuid import UUID
 
 from fastapi import Depends
-from fastapi_users import (BaseUserManager, FastAPIUsers, IntegerIDMixin,
-                           InvalidPasswordException)
+from fastapi_users import (BaseUserManager, FastAPIUsers,
+                           InvalidPasswordException, UUIDIDMixin)
 from fastapi_users.authentication import (AuthenticationBackend,
                                           CookieTransport, JWTStrategy)
 from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.config import settings
-from app.core.db import get_async_session
-from app.models.user import User
+from app.db.db import get_async_session
+from app.db.settings import settings
+from app.models import User
 from app.schemas.user import UserCreate
 
 
-class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
+class UserManager(UUIDIDMixin, BaseUserManager[User, UUID]):
 
     async def validate_password(
             self,
@@ -36,18 +37,18 @@ async def get_user_db(session: AsyncSession = Depends(get_async_session)):
 
 
 cookie_transport = CookieTransport(
-    cookie_max_age=settings.cookie_max_age,
-    cookie_name=settings.cookie_name,
-    cookie_secure=settings.cookie_secure,
-    cookie_httponly=settings.cookie_httponly,
-    cookie_samesite=settings.cookie_samesite,
+    cookie_max_age=settings.COOKIE_MAX_AGE,
+    cookie_name=settings.COOKIE_NAME,
+    cookie_secure=settings.COOKIE_SECURE,
+    cookie_httponly=settings.COOKIE_HTTPONLY,
+    cookie_samesite=settings.COOKIE_SAMESITE,
 )
 
 
 def get_jwt_strategy() -> JWTStrategy:
     return JWTStrategy(
-        secret=settings.secret,
-        lifetime_seconds=settings.lifetime_seconds
+        secret=settings.SECRET,
+        lifetime_seconds=settings.LIFETIME_SECONDS
     )
 
 
@@ -62,7 +63,7 @@ async def get_user_manager(user_db=Depends(get_user_db)):
     yield UserManager(user_db)
 
 
-fastapi_users = FastAPIUsers[User, int](
+fastapi_users = FastAPIUsers[User, UUID](
     get_user_manager,
     [auth_backend]
 )
