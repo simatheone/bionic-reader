@@ -37,7 +37,6 @@ class Settings(BaseSettings):
 
     @property
     def database_url(self):
-
         return (
             f"postgresql+asyncpg://"
             f"{self.PGUSER}:{self.PGPASSWORD}"
