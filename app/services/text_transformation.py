@@ -69,22 +69,24 @@ def insert_bold_tag_in_word(
 
 
 def transform_text(paragraph: str, open_tag: str, close_tag: str) -> str:
-    words_and_symbols = paragraph.split()
+    sentences = paragraph.split()
     transfromed_paragraph = []
 
-    for _ in words_and_symbols:
-        splitted_word_or_symbol = re.split(REGEX_SPLIT_PATTERN, _)
+    for sentence in sentences:
+        splitted_words_or_symbols = re.split(REGEX_SPLIT_PATTERN, sentence)
 
-        transformed_string = []
-        for _ in splitted_word_or_symbol:
-            if _.isalpha():
-                _ = insert_bold_tag_in_word(_, open_tag, close_tag)
-                transformed_string.append(_)
+        transformed_sentence = []
+        for characters in splitted_words_or_symbols:
+            if characters.isalpha():
+                characters = insert_bold_tag_in_word(
+                    characters, open_tag, close_tag
+                )
+                transformed_sentence.append(characters)
             else:
-                transformed_string.append(_)
+                transformed_sentence.append(characters)
 
-        transformed_string = ''.join(transformed_string)
-        transfromed_paragraph.append(transformed_string)
+        transformed_sentence = ''.join(transformed_sentence)
+        transfromed_paragraph.append(transformed_sentence)
     return ' '.join(transfromed_paragraph)
 
 
