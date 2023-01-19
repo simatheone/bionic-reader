@@ -1,1 +1,3 @@
 # bionic-reader
+
+### Project structure
