@@ -1,4 +1,4 @@
-# bionic-reader
+# Bionic Reader
 
 ### Project structure
 
