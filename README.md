@@ -1,9 +1,24 @@
-# Bionic Reader
+<details>
+  <summary>Table of Contents</summary>
+</details>
+
+# About the Project
+<!--
+## Features
+
+## Built With
 
 ### Project structure
 
-### Usage
+# Getting Started
 
-### Routes
+### Installation
 
-### Starting
+# Usage
+
+### Contributing
+
+### License
+
+### Contact
+-->
