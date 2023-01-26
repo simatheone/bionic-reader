@@ -3,9 +3,9 @@
 </details>
 
 # About the Project
-<!--
-## Features
 
+## Features
+<!--
 ## Built With
 
 ### Project structure
