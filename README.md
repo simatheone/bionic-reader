@@ -7,9 +7,9 @@
 ## Features
 
 ## Built With
-<!--
-### Project structure
 
+### Project structure
+<!--
 # Getting Started
 
 ### Installation
