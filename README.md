@@ -11,9 +11,9 @@
 ### Project structure
 
 # Getting Started
-<!--
-### Installation
 
+### Installation
+<!--
 # Usage
 
 ### Contributing
