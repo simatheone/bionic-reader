@@ -13,9 +13,9 @@
 # Getting Started
 
 ### Installation
-<!--
-# Usage
 
+# Usage
+<!--
 ### Contributing
 
 ### License
