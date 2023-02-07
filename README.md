@@ -15,9 +15,9 @@
 ### Installation
 
 # Usage
-<!--
-### Contributing
 
+### Contributing
+<!--
 ### License
 
 ### Contact
