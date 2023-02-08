@@ -17,8 +17,8 @@
 # Usage
 
 ### Contributing
-<!--
-### License
 
+### License
+<!--
 ### Contact
 -->
