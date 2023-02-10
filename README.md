@@ -1,7 +1,3 @@
-<details>
-  <summary>Table of Contents</summary>
-</details>
-
 # About the Project
 
 ## Features
@@ -22,3 +18,6 @@
 
 ### Contact
 
+<details>
+  <summary>Table of Contents</summary>
+</details>
