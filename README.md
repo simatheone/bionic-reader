@@ -22,3 +22,5 @@
 <details>
   <summary>Table of Contents</summary>
 </details>
+
+Frontend for Application [here](https://github.com/bnzone/bionic-reader)
