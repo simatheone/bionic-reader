@@ -1,7 +1,7 @@
-from typing import Union
+from typing import Union, Optional
 from uuid import UUID
 
-from fastapi import Depends
+from fastapi import Depends, Request
 from fastapi_users import (BaseUserManager, FastAPIUsers,
                            InvalidPasswordException, UUIDIDMixin)
 from fastapi_users.authentication import (AuthenticationBackend,
@@ -13,9 +13,12 @@ from app.db.db import get_async_session
 from app.db.settings import settings
 from app.models import User
 from app.schemas.user import UserCreate
+from app.services.email import send_email
 
 
 class UserManager(UUIDIDMixin, BaseUserManager[User, UUID]):
+    reset_password_token_secret = settings.RESET_PASSWORD_TOKEN_SECRET
+    verification_token_secret = settings.VERIFICATION_TOKEN_SECRET
 
     async def validate_password(
             self,
@@ -30,6 +33,40 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, UUID]):
             raise InvalidPasswordException(
                 reason='Password should not contain e-mail'
             )
+
+    async def on_after_forgot_password(
+        self, user: User, token: str, request: Optional[Request] = None
+    ):
+        reset_password_link = (
+            settings.ALLOW_ORIGINS + '/forgot-password?token=' + token
+        )
+        message = (
+            'Subject: Password reset link\n\n'
+            f'Hello {user.first_name}!\n\n'
+            'You have indicated that you forgot your password. Please click on'
+            f' the link: {reset_password_link} to reset your password. \n\n'
+            'If you did not ask to change your password, then you can ignore'
+            ' this email and your password will not be changed.\n\n'
+            'Best wishes,\n'
+            'The Bionic Reader Team'
+        )
+        receiver_email = user.email
+        await send_email(receiver_email, message)
+
+    async def on_after_reset_password(
+        self, user: User, request: Optional[Request] = None
+    ):
+        message = (
+            'Subject: Your New Password Is Set\n\n'
+            f'Hello {user.first_name}!\n\n'
+            'Success! Your new password is in place and ready to use. '
+            'If you didn’t change your password, we recommend that you reset'
+            ' it now to make sure your account stays secure.\n\n'
+            'Best wishes,\n'
+            'The Bionic Reader Team'
+        )
+        receiver_email = user.email
+        await send_email(receiver_email, message)
 
 
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):

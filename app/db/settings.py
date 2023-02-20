@@ -35,6 +35,15 @@ class Settings(BaseSettings):
     # JWT settings
     LIFETIME_SECONDS: int
 
+    # Secret for mixing verification token
+    RESET_PASSWORD_TOKEN_SECRET: str
+    VERIFICATION_TOKEN_SECRET: str
+
+    SMTP_SERVER: str
+    SMTP_PORT: int
+    SENDER_EMAIL: str
+    MAIL_PASSWORD: str
+
     @property
     def database_url(self):
         return (
