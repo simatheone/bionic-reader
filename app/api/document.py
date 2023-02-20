@@ -1,7 +1,7 @@
 from http import HTTPStatus
 from uuid import UUID
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse, Response
 from fastapi_pagination import Page, Params, paginate
@@ -15,8 +15,8 @@ from app.models import User
 from app.schemas.document import (DocumentBase, DocumentCreate,
                                   DocumentInfo, DocumentResponse,
                                   DocumentTransformRequest)
-from app.services.pdf_generator import execute_pdf_generation_process
-from app.services.text_transformation import execute_transformation_process
+from app.utils.pdf_generator import execute_pdf_generation_process
+from app.utils.text_transformation import execute_transformation_process
 
 router = APIRouter(
     prefix='/document',
@@ -95,6 +95,14 @@ async def download_document(
     pdf_file_bytearray = await execute_pdf_generation_process(
         document_text
     )
+    if not pdf_file_bytearray:
+        raise HTTPException(
+            status_code=HTTPStatus.UNPROCESSABLE_ENTITY,
+            detail=(
+                'We have come up with some errors while processing your '
+                'PDF-file. Please try again later.'
+            )
+        )
     pdf_file_as_bytes = bytes(pdf_file_bytearray)
     headers = {
         'Content-Disposition': f'attachment; filename="{document_title}.pdf"'
