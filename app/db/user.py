@@ -50,7 +50,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, UUID]):
             ' ever forget.\n\n'
             'Best wishes,\n'
             'The Bionic Reader Team'
-        )
+        ).encode('utf-8')
         await send_email(receiver_email, message)
 
     async def on_after_forgot_password(
@@ -69,7 +69,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, UUID]):
             ' this email and your password will not be changed.\n\n'
             'Best wishes,\n'
             'The Bionic Reader Team'
-        )
+        ).encode('utf-8')
         receiver_email = user.email
         await send_email(receiver_email, message)
 
@@ -78,12 +78,13 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, UUID]):
     ) -> None:
         message = (
             'Subject: Your New Password Is Set\n\n'
-            'Success! Your new password is in place and ready to use. '
+            'Success!\n'
+            'Your new password is in place and ready to use.\n'
             'If you didn’t change your password, we recommend that you reset'
             ' it now to make sure your account stays secure.\n\n'
             'Best wishes,\n'
             'The Bionic Reader Team'
-        )
+        ).encode('utf-8')
         receiver_email = user.email
         await send_email(receiver_email, message)
 

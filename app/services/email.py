@@ -1,4 +1,5 @@
-from smtplib import SMTP_SSL, ssl
+from smtplib import SMTP_SSL
+from ssl import create_default_context
 from typing import Tuple
 
 from app.db.settings import settings
@@ -16,9 +17,9 @@ def get_smtp_configuration() -> Tuple[str, int, str, str]:
             mail_password)
 
 
-async def send_email(receiver_email: str, message: str) -> None:
+async def send_email(receiver_email: str, message: bytes) -> None:
     """Service function for sending email."""
-    context = ssl.create_default_context()
+    context = create_default_context()
     smtp_server, port, sender_email, mail_password = (
         get_smtp_configuration()
     )
