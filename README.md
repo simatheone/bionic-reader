@@ -40,7 +40,7 @@
 ## Built With
 ### Backend
 ![](https://img.shields.io/badge/python-3.8.10-9cf)
-![](https://img.shields.io/badge/FastAPI-0.85.0-9cf)
+![](https://img.shields.io/badge/FastAPI-0.92.0-9cf)
 ![](https://img.shields.io/badge/Uvicorn-0.18.3-9cf)
 ![](https://img.shields.io/badge/SQLAlchemy-1.4.41-9cf)
 ![](https://img.shields.io/badge/Alembic-1.8.1-9cf)
