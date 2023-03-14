@@ -136,7 +136,7 @@ See auto-generated documentation for API to get all information about available 
 
 ### Contributing
 
-Have any suggestions that could improve this project? Feel free to the repository and create a [Pull Request][pull-request].
+Have any suggestions that could improve this project? Feel free to fork the repository and create a [Pull Request][pull-request].
 
 1. Fork the project
 2. Create your **feature** branch:
