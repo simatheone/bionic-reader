@@ -24,7 +24,7 @@ def insert_bold_tag_in_word(
     word_to_transform: str, open_tag: str, close_tag: str
 ) -> str:
     """Transforms the word by inserting a bold tag in
-    spicific place in word.
+    specific place in word.
 
     The base logic of adding bold tags.
         If word's length is equal to 1 then bold tags will be added
@@ -70,7 +70,7 @@ def insert_bold_tag_in_word(
 
 def transform_text(paragraph: str, open_tag: str, close_tag: str) -> str:
     sentences = paragraph.split()
-    transfromed_paragraph = []
+    transformed_paragraph = []
 
     for sentence in sentences:
         splitted_words_or_symbols = re.split(REGEX_SPLIT_PATTERN, sentence)
@@ -86,8 +86,8 @@ def transform_text(paragraph: str, open_tag: str, close_tag: str) -> str:
                 transformed_sentence.append(characters)
 
         transformed_sentence = ''.join(transformed_sentence)
-        transfromed_paragraph.append(transformed_sentence)
-    return ' '.join(transfromed_paragraph)
+        transformed_paragraph.append(transformed_sentence)
+    return ' '.join(transformed_paragraph)
 
 
 async def execute_transformation_process(

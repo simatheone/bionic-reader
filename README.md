@@ -51,7 +51,7 @@ It is not used for commercial purposes. Anyone can register and use the service 
 
 #
 
-Bionic Reading is a technique that allows you to highlight a certain number of letters in the text. While reading your brain is focusing on the highlighted letters and completes the words (nonhighlighted letters). It can increase your reading speed and understanding of the content.
+Bionic Reading is a technique that allows you to highlight a certain number of letters in the text. While reading your brain is focusing on the highlighted letters and completes the words (non-highlighted letters). It can increase your reading speed and understanding of the content.
 </br>
 
 [Experience it now!][bionic-reader-site]

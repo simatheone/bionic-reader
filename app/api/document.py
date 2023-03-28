@@ -146,11 +146,11 @@ async def create_new_document(
 async def transform_text(
     document: DocumentTransformRequest
 ):
-    """Returns transfromed text as a string with html tags inside.
+    """Returns transformed text as a string with html tags inside.
 
        Fields to return:
        - **text**: transformed text with hmtl bold tags and
-       line breakes inside.
+       line breaks inside.
     """
     document_data = jsonable_encoder(document)
     transformed_text = None
